@@ -9,4 +9,7 @@ $ yarn format          # prettify the code
 $ yarn lint            # static code analysis
 $ yarn test            # run tests
 $ yarn test:coverage   # check test coverage
+
+# Run the program
+$ node src/index.js
 ```
