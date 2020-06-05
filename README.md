@@ -17,6 +17,6 @@ $ node src/index.js
 ## Refactoring
 An exercise from the first chapter of Martin Fowler's book Refactoring
 
-# Original Version
+### Original Version
 Added the minimum code necesary for running the origial code.
 No testing yet.
