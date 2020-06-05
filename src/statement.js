@@ -45,7 +45,7 @@ function statement (invoice, plays) {
         }
 
         // print line for this order
-        result += `   ${play.name}: ${format(totalAmount/100)} (${perf.audience} seats)\n`;
+        result += `   ${play.name}: ${format(thisAmount/100)} (${perf.audience} seats)\n`;
         totalAmount += thisAmount;
     }
     result += `Amount owed is ${format(totalAmount/100)}\n`;
