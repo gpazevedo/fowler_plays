@@ -6,7 +6,6 @@
 
 function statement (invoice, plays) {
     let locale = "en-US";  // Its possible any locales
-    let totalAmount = 0;
     let volumeCredits = 0;
     let result = `Statement for ${invoice.customer}\n`;
 
@@ -18,9 +17,8 @@ function statement (invoice, plays) {
 
         // print line for this order
         result += `   ${playFor(perf).name}: ${format(thisAmount/100, locale)} (${perf.audience} seats)\n`;
-        totalAmount += thisAmount;
     }
-    result += `Amount owed is ${format(totalAmount/100, locale)}\n`;
+    result += `Amount owed is ${format(totalAmountFor(invoice)/100, locale)}\n`;
     result += `You earned ${volumeCredits} credits\n`;
     return result;
 
@@ -65,6 +63,16 @@ function statement (invoice, plays) {
         }
         return volumeCredits;
     };
+
+    // Returns the total amount for an Invoice
+    function totalAmountFor(aInvoice) {
+        let totalAmount = 0;
+
+        for (let perf of aInvoice.performances) {
+            totalAmount += amountFor(perf);
+        }
+        return totalAmount;
+    }
 
     // Formats a numbers according to its locale
     function format(aNumber, locale) {
