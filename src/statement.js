@@ -15,26 +15,8 @@ function statement (invoice, plays) {
             }).format;
 
     for (let perf of invoice.performances) {
-        const play = playFor(perf);
-        let thisAmount = 0;
-
-        switch (play.type) {
-            case "tragedy":
-                thisAmount += 40000;
-                if (perf.audience > 30) {
-                    thisAmount += 1000 * (perf.audience - 30);
-                }
-                break;
-            case "comedy":
-                thisAmount = 30000;
-                if (perf.audience > 20) {
-                    thisAmount += 10000 + 500 * (perf.audience - 20);
-                }
-                thisAmount += 300 * perf.audience;
-                break;
-            default:
-                throw new Error (`Unknow type: ${play.type}`);        
-        }
+        let thisAmount = amountFor(perf);
+        let play = playFor(perf);
 
         // add volume credits
         volumeCredits += Math.max(perf.audience - 30, 0);
@@ -52,8 +34,34 @@ function statement (invoice, plays) {
     result += `You earned ${volumeCredits} credits\n`;
     return result;
 
+    // Returns the performance's play
     function playFor (aPerformance) {
         return (plays[aPerformance.playID]);
+    }
+
+    // Returns the amount for a performance
+    function amountFor(aPerformance) {
+        const play = playFor(aPerformance);
+        let thisAmount = 0;
+
+        switch (play.type) {
+            case "tragedy":
+                thisAmount += 40000;
+                if (aPerformance.audience > 30) {
+                    thisAmount += 1000 * (aPerformance.audience - 30);
+                }
+                break;
+            case "comedy":
+                thisAmount = 30000;
+                if (aPerformance.audience > 20) {
+                    thisAmount += 10000 + 500 * (aPerformance.audience - 20);
+                }
+                thisAmount += 300 * aPerformance.audience;
+                break;
+            default:
+                throw new Error (`Unknow type: ${play.type}`);        
+        };
+        return (thisAmount);
     }
 
 }
