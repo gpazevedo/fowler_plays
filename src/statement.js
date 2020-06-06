@@ -6,20 +6,14 @@
 
 function statement (invoice, plays) {
     let locale = "en-US";  // Its possible any locales
-    let volumeCredits = 0;
     let result = `Statement for ${invoice.customer}\n`;
 
     for (let perf of invoice.performances) {
-        let thisAmount = amountFor(perf);
-
-        // add volume credits
-        volumeCredits += volumeCreditsFor (perf);
-
         // print line for this order
-        result += `   ${playFor(perf).name}: ${format(thisAmount/100, locale)} (${perf.audience} seats)\n`;
+        result += `   ${playFor(perf).name}: ${format(amountFor(perf)/100, locale)} (${perf.audience} seats)\n`;
     }
     result += `Amount owed is ${format(totalAmountFor(invoice)/100, locale)}\n`;
-    result += `You earned ${volumeCredits} credits\n`;
+    result += `You earned ${volumeCreditsFor(invoice)} credits\n`;
     return result;
 
     // Returns the performance's play
@@ -52,14 +46,19 @@ function statement (invoice, plays) {
         return (thisAmount);
     }
 
-    // Returns the volume credits from a Performance
-    function volumeCreditsFor (aPerformance) {
-        // add volume credits
-        let volumeCredits = Math.max(aPerformance.audience - 30, 0);
+    // Returns the volume credits from an Invoice
+    function volumeCreditsFor (aInvoice) {
+        let volumeCredits = 0;
 
-        //add extra credit for every ten comedy attendees
-        if ("comedy" === playFor(aPerformance).type) {
-            volumeCredits += Math.floor(aPerformance.audience / 5);  
+        for (let perf of aInvoice.performances) {
+
+            // add volume credits
+            volumeCredits += Math.max(perf.audience - 30, 0);
+
+            //add extra credit for every ten comedy attendees
+            if ("comedy" === playFor(perf).type) {
+                volumeCredits += Math.floor(perf.audience / 5);  
+            }
         }
         return volumeCredits;
     };
