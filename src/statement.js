@@ -15,7 +15,7 @@ function statement (invoice, plays) {
             }).format;
 
     for (let perf of invoice.performances) {
-        const play = plays[perf.playID];
+        const play = playFor(perf);
         let thisAmount = 0;
 
         switch (play.type) {
@@ -51,6 +51,11 @@ function statement (invoice, plays) {
     result += `Amount owed is ${format(totalAmount/100)}\n`;
     result += `You earned ${volumeCredits} credits\n`;
     return result;
+
+    function playFor (aPerformance) {
+        return (plays[aPerformance.playID]);
+    }
+
 }
 
 module.exports = {statement};
