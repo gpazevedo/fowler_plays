@@ -3,18 +3,23 @@
 //   Refactoring Chapter 1
 //
 ///////////////////////////////////////////////////////////////////////////////
-
 function statement (invoice, plays) {
-    let locale = "en-US";  // Its possible any locales
-    let result = `Statement for ${invoice.customer}\n`;
+    const statementData = {};
+    statementData.customer = invoice.customer;
+    statementData.performances = invoice.performances.map(enrichPerformance);
+    statementData.totalAmount = totalAmount(statementData);
+    statementData.totalVolumeCredits = totalVolumeCredits(statementData);
 
-    for (let perf of invoice.performances) {
-        // print line for this order
-        result += `   ${playFor(perf).name}: ${format(amountFor(perf)/100, locale)} (${perf.audience} seats)\n`;
+    let textFormated = renderPlainText (statementData)
+    return textFormated;
+
+    function enrichPerformance(aPerformance) {
+        let result = Object.assign({}, aPerformance);
+        result.play = playFor (result);
+        result.amount = amountFor(result);
+        result.volumeCredits = volumeCreditsFor(result);
+        return result;
     }
-    result += `Amount owed is ${format(totalAmountFor(invoice)/100, locale)}\n`;
-    result += `You earned ${volumeCreditsFor(invoice)} credits\n`;
-    return result;
 
     // Returns the performance's play
     function playFor (aPerformance) {
@@ -23,10 +28,9 @@ function statement (invoice, plays) {
 
     // Returns the amount for a performance
     function amountFor(aPerformance) {
-        const play = playFor(aPerformance);
         let thisAmount = 0;
 
-        switch (play.type) {
+        switch (aPerformance.play.type) {
             case "tragedy":
                 thisAmount += 40000;
                 if (aPerformance.audience > 30) {
@@ -41,37 +45,51 @@ function statement (invoice, plays) {
                 thisAmount += 300 * aPerformance.audience;
                 break;
             default:
-                throw new Error (`Unknow type: ${play.type}`);        
+                throw new Error (`Unknow type: ${aPerformance.play.type}`);        
         };
         return (thisAmount);
     }
 
-    // Returns the volume credits from an Invoice
-    function volumeCreditsFor (aInvoice) {
-        let volumeCredits = 0;
+    // Returns the volume credits
+    function volumeCreditsFor(aPerformance) {
+        // add volume credits
+        let volumeCredits = Math.max(aPerformance.audience - 30, 0);
 
-        for (let perf of aInvoice.performances) {
-
-            // add volume credits
-            volumeCredits += Math.max(perf.audience - 30, 0);
-
-            //add extra credit for every ten comedy attendees
-            if ("comedy" === playFor(perf).type) {
-                volumeCredits += Math.floor(perf.audience / 5);  
-            }
+        //add extra credit for every ten comedy attendees
+        if ("comedy" === aPerformance.play.type) {
+            volumeCredits += Math.floor(aPerformance.audience / 5);  
         }
         return volumeCredits;
-    };
+     };
 
-    // Returns the total amount for an Invoice
-    function totalAmountFor(aInvoice) {
-        let totalAmount = 0;
-
-        for (let perf of aInvoice.performances) {
-            totalAmount += amountFor(perf);
+     function totalVolumeCredits (data) {
+        let result = 0;
+        for (let perf of data.performances) {
+            result += perf.volumeCredits;
         }
-        return totalAmount;
+        return result;
     }
+
+    function totalAmount (data) {
+        let result = 0;
+        for (let perf of data.performances) {
+            result += perf.amount;
+        }
+        return result;
+    }
+}
+
+function renderPlainText (data) {
+    let locale = "en-US";  // Its possible any locales
+    let result = `Statement for ${data.customer}\n`;
+
+    for (let perf of data.performances) {
+        // print line for this order
+        result += `   ${perf.play.name}: ${format(perf.amount/100, locale)} (${perf.audience} seats)\n`;
+    }
+    result += `Amount owed is ${format(data.totalAmount/100, locale)}\n`;
+    result += `You earned ${data.totalVolumeCredits} credits\n`;
+    return result;
 
     // Formats a numbers according to its locale
     function format(aNumber, locale) {
