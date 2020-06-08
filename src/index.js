@@ -8,19 +8,17 @@
 const  { htmlStatement } = require ('./statement');
 
 // Get the plays
-var plays = require('./plays.json');
+const plays = require('./plays.json');
 
 // Get the invoices
-var invoices = require('./invoices.json');
+const invoices = require('./invoices.json');
 
 for (let inv of invoices) {
-    let invoice_msg = statement (inv, plays);
+    const invoice_msg = statement (inv, plays);
     console.log (invoice_msg);
 }
 
 for (let inv of invoices) {
-    let invoice_msg = htmlStatement (inv, plays);
+    const invoice_msg = htmlStatement (inv, plays);
     console.log (invoice_msg);
 }
-
-

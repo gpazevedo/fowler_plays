@@ -4,10 +4,10 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-const  { PerformanceCalculator } = require ('./performanceCalculator');
+const  { ComedyCalculator } = require ('./comedyCalculator');
 
 // Testing with sinthetic intakes
-let sInvoices = [
+const sInvoices = [
     {
         "customer": "BigCo",
         "performances": [
@@ -23,47 +23,25 @@ let sInvoices = [
                 "playID": "othello",
                 "audience": 40
             }
-            
         ]
     }
 ];
 
-let sPlays = {
+const sPlays = {
     "hamlet": {"name": "Hamlet", "type": "tragedy"},
     "as-like": {"name": "As You Like It", "type": "comedy"},
     "othello": {"name": "Othello", "type": "tragedy"}
 };
 
-let performance = sInvoices[0].performances[0];
-let play = sPlays[performance.playID];
-let calculator = new PerformanceCalculator (performance, play);
+
+const performance = sInvoices[0].performances[1]; //as-like comedy
+const play = sPlays[performance.playID];
+const calculator = new ComedyCalculator (performance, play);
 
 test ('Amount', () => {
-    expect(calculator.amount).toBe(65000);
+    expect(calculator.amount).toBe(58000);
 });
 
 test ('volumeCredits', () => {
-    expect(calculator.volumeCredits).toBe(25);
+    expect(calculator.volumeCredits).toBe(12);
 });
-
-
-
-// Testing with the actual intakes:
-// Get the plays
-var plays = require('./plays.json');
-
-// Get the invoices
-var invoices = require('./invoices.json');
-
-performance = invoices[0].performances[0];
-play = plays[performance.playID];
-calculator = new PerformanceCalculator (performance, play);
-
-test ('Amount', () => {
-    expect(calculator.amount).toBe(65000);
-});
-
-test ('volumeCredits', () => {
-    expect(calculator.volumeCredits).toBe(25);
-});
-

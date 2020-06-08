@@ -16,10 +16,10 @@ You earned 47 credits
 `;
 
 // Get the plays
-var plays = require('./plays.json');
+const plays = require('./plays.json');
 
 // Get the invoices
-var invoices = require('./invoices.json');
+const invoices = require('./invoices.json');
 
 let invoice_msg
 for (let inv of invoices) {

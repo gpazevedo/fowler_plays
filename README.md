@@ -32,3 +32,13 @@ An exercise from the first chapter of Martin Fowler's book Refactoring
  * alter (update) the calculations of a type of play
 
 First I will reorganize the files and add unit tests. Done !
+
+Examining the calculations with more detail, I notice it reflects a business model, that is very specific and confusing. It seems unrealistic and nonsense, but let's support it.
+
+So I decided to advance the refactoring using *Replace Conditional with Polymorphism*, as Fowler did.
+It will allow a new type of play to be implemented with total freedom in its calculations. 
+If necessary with personalized additional programming.
+
+I created one class for each type, that extends PerformanceCalculator.
+They calculate the specific amount and volume credits for each play type.
+Each class has its corresponding unit test.

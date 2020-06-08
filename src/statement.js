@@ -11,7 +11,7 @@ function statement (invoice, plays) {
 }
 
 function renderPlainText (data) {
-    let locale = "en-US";  // Its possible any locales
+    const locale = "en-US";  // Its possible any locales
     let result = `Statement for ${data.customer}\n`;
 
     for (let perf of data.performances) {
@@ -28,7 +28,7 @@ function htmlStatement(invoice, plays) {
 }
 
 function renderHtml(data) {
-    let locale = "en-US";  // Its possible any locales
+    const locale = "en-US";  // Its possible any locales
     let result = `<h1>Statement for ${data.customer}<h1>\n`;
     result += "<table>\n";
     result += "<tr><th>play</th><th>seats</th><th>cost</th></tr>\n";

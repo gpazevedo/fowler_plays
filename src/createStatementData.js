@@ -4,8 +4,8 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 module.exports = {createStatementData}
-const  { PerformanceCalculator } = require ('./performanceCalculator');
-
+const  { TragedyCalculator } = require ('./tragedyCalculator');
+const  { ComedyCalculator } = require ('./comedyCalculator');
 
 function createStatementData (invoice, plays) {
     const statementData = {};
@@ -17,7 +17,7 @@ function createStatementData (invoice, plays) {
     return statementData;
 
     function enrichPerformance(aPerformance) {
-        const calculator = new PerformanceCalculator (aPerformance, playFor(aPerformance));
+        const calculator = createPerformanceCalculator (aPerformance, playFor(aPerformance));
         let result = Object.assign({}, aPerformance);
         result.play = calculator.play;
         result.amount = calculator.amount;
@@ -25,11 +25,20 @@ function createStatementData (invoice, plays) {
         return result;
     }
 
+    function createPerformanceCalculator(aPerformance, aPlay) {
+        switch (aPlay.type) {
+            case "tragedy": return new TragedyCalculator(aPerformance, aPlay);
+            case "comedy": return new ComedyCalculator(aPerformance, aPlay);
+        
+            default:
+                throw new Error ("unknow play type!");
+        }
+    };
+
     // Returns the performance's play
     function playFor (aPerformance) {
         return (plays[aPerformance.playID]);
     };
-
 
     function totalVolumeCredits (data) {
        return data.performances.reduce((total, p) => total + p.volumeCredits,0);
@@ -39,4 +48,3 @@ function createStatementData (invoice, plays) {
         return data.performances.reduce((total, p) => total + p.amount,0);
     }
 }
-
